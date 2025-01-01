@@ -1,0 +1,38 @@
+pipeline {
+    agent any
+    tools{
+        maven 'maven3'
+    }
+    stages{
+        stage('Build Maven'){
+            steps{
+               checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/VedashriMH/JenkinsProject']])
+                bat 'mvn clean install'
+            }
+        }
+        stage('Build and Push Docker Image'){
+            steps{
+                script{
+
+                    bat 'docker build -t savita29/spring .'
+                    bat 'docker push savita29/spring'
+                }
+            }
+        }
+        stage('Deploy to k8s') {
+                    steps {
+                        script {
+                            // Update the Kubernetes YAML file with the new image tag
+                            bat """
+                            powershell -Command "(Get-Content deploymentservice.yml) -replace 'image: savita29/spring:.*', 'image: ${env.IMAGE_TAG}' | Set-Content deploymentservice.yml"
+                            """
+
+                            // Deploy using kubectl
+                            kubernetesDeploy(configs: 'deploymentservice.yml', kubeconfigId: 'k8sconfigpwd')
+                        }
+                    }
+                }
+
+
+    }
+}
