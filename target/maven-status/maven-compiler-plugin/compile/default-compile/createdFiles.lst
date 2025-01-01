@@ -1,5 +1,6 @@
-com\example\CarApplication\controller\Carcontroller.class
-com\example\CarApplication\model\Car.class
 com\example\CarApplication\service\CarService.class
 com\example\CarApplication\CarApplication.class
+com\example\CarApplication\controller\Carcontroller.class
+com\example\CarApplication\model\Car.class
+com\example\CarApplication\model\Car$CarBuilder.class
 com\example\CarApplication\repository\CarRepository.class
